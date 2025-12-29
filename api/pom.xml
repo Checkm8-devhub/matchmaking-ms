@@ -43,6 +43,12 @@
             <artifactId>quarkus-swagger-ui</artifactId>
         </dependency>
 
+        <!-- OIDC -->
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-oidc</artifactId>
+        </dependency>
+
         <!-- modules -->
         <dependency>
             <groupId>com.checkm8.matchmaking.ms</groupId>

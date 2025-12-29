@@ -204,3 +204,5 @@ README.html
 /.quarkus/cli/plugins/
 # TLS Certificates
 .certs/
+
+.env
