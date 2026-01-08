@@ -42,11 +42,11 @@ public class MatchmakingResource {
     private UriInfo uriInfo;
 
     private Client httpClient_users;
-    @ConfigProperty(name = "auth.users.ms.base-url", defaultValue = "http://localhost:8082/api/v1")
+    @ConfigProperty(name = "auth.users.ms.base-url")
     private String baseUrl_users;
 
     private Client httpClient_keycloak;
-    @ConfigProperty(name = "keycloak.token-url", defaultValue = "http://localhost:8083/realms/auth/protocol/openid-connect/token")
+    @ConfigProperty(name = "keycloak.token-url")
     private String tokenUrl_keycloak;
 
     @ConfigProperty(name = "clientSecret")
