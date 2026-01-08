@@ -60,7 +60,7 @@ public class MatchmakingBean {
     /**
      * returns null on not able to match
      */
-    public FutureConsumable makeMatch(User user) {
+    public FutureConsumable makeMatch(User user, String jwt) {
 
         var worthyOpponents = 
             this.waiters.entrySet().stream()
@@ -73,16 +73,17 @@ public class MatchmakingBean {
             var user2 = worthyOpponents.get(0);
             System.out.printf("worthyOpponent: key:[%s], elo:[%d]\n", user2.getKey(), user2.getValue().user.elo);
             if (this.waiters.remove(user2.getKey()) != null) { // remove it from waiters, so other threads cant match with the same one
-                return makeMatch(user, user2);
+                return makeMatch(user, user2, jwt);
             }
         }
         return null;
     }
-    private FutureConsumable makeMatch(User user1, Entry<String, Waiter> user2) {
+    private FutureConsumable makeMatch(User user1, Entry<String, Waiter> user2, String jwt) {
         
         Response r = this.httpClient_gameplay
             .target(this.baseUrl_gameplay + "/games")
             .request()
+            .header("Authorization", "Bearer " + jwt)
             .post(Entity.json(""));
         if (r.getStatus() != 201) {
             System.out.printf("status: [%d]\n", r.getStatus());

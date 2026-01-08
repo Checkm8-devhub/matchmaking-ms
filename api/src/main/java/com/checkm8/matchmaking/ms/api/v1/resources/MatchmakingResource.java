@@ -91,7 +91,7 @@ public class MatchmakingResource {
     private static final Long LONG_POOL_TIMEOUT_MS = 30000L;
     @GET
     @Blocking
-    public Uni<Response> getOpponent() {
+    public Uni<Response> getOpponentImpl() {
         
         String userSubject = this.jwt.getSubject();
 
@@ -112,11 +112,14 @@ public class MatchmakingResource {
                 .request()
                 .header("Authorization", "Bearer " + this.jwt_access_token)
                 .get();
+            if (r.getStatus() == 401) {
+                return Uni.createFrom().item(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Server couldn't authenticate").build());
+            }
         }
 
         if (r.getStatus() != 200) {
             r.close();
-            return Uni.createFrom().item(Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+            return Uni.createFrom().item(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Server couldn't get user").build());
         }
 
         UsersResponse usersResponse = r.readEntity(UsersResponse.class);
@@ -129,7 +132,7 @@ public class MatchmakingResource {
         // ---
 
         // try to find opponent immediatelly
-        FutureConsumable consumable = matchmakingBean.makeMatch(user);
+        FutureConsumable consumable = matchmakingBean.makeMatch(user, this.jwt_access_token);
         if (consumable != null) {
             return Uni.createFrom().item(Response.ok(consumable).build());
         }
