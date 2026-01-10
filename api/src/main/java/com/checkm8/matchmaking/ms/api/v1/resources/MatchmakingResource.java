@@ -4,6 +4,9 @@ import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
 import com.checkm8.matchmaking.ms.api.v1.dtos.KeycloakResponse;
 import com.checkm8.matchmaking.ms.api.v1.dtos.UsersResponse;
@@ -91,6 +94,24 @@ public class MatchmakingResource {
     private static final Long LONG_POOL_TIMEOUT_MS = 30000L;
     @GET
     @Blocking
+    @Operation(
+      summary = "Seek an opponent",
+      description = "Long-polling endpoint. Returns a match immediately if available, otherwise waits up to 30s. Returns 204 if no opponent found within the timeout."
+    )
+    @APIResponses({
+      @APIResponse(
+        responseCode = "200",
+        description = "Match found"
+      ),
+      @APIResponse(
+        responseCode = "204",
+        description = "No opponent found within timeout"
+      ),
+      @APIResponse(
+        responseCode = "500",
+        description = "Internal error (cannot authenticate to Users MS or cannot fetch user)"
+      )
+    })
     public Uni<Response> getOpponentImpl() {
         
         String userSubject = this.jwt.getSubject();
