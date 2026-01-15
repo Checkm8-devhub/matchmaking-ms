@@ -18,7 +18,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: CLIENTSECRET
-              value: 7NXnmMVM2OKp81GHM2uPBfdNaUmEhZDw
+              value: 8mekHnlPgwWzyRdBkWjLYAYslok06axV
           ports:
             - containerPort: 8080
 ---
